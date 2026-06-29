@@ -1,0 +1,34 @@
+{
+  "expo": {
+    "name": "HomeRepair",
+    "slug": "home-repair-app",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "userInterfaceStyle": "light",
+    "ios": {
+      "supportsTablet": false,
+      "bundleIdentifier": "com.homerepairsus.app",
+      "usesAppleSignIn": true,
+      "infoPlist": {
+        "NSCameraUsageDescription": "Used to take photos of your home repair issues.",
+        "NSPhotoLibraryUsageDescription": "Used to select photos of your home repair issues.",
+        "NSPhotoLibraryAddUsageDescription": "Used to save photos of your home repair issues."
+      }
+    },
+    "plugins": [
+      "expo-apple-authentication",
+      [
+        "expo-image-picker",
+        {
+          "photosPermission": "The app needs access to your photos to share images of your home repair issues.",
+          "cameraPermission": "The app needs access to your camera to take photos of your home repair issues."
+        }
+      ]
+    ],
+    "extra": {
+      "eas": {
+        "projectId": "YOUR_EAS_PROJECT_ID"
+      }
+    }
+  }
+}
