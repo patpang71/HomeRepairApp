@@ -44,6 +44,16 @@ export async function uploadImageToS3(uploadUrl: string, imageUri: string): Prom
   }
 }
 
+export async function sendSystemMessage(
+  token: string,
+  message: string,
+): Promise<ChatResponse> {
+  return apiFetch<ChatResponse>('/chat', token, {
+    method: 'POST',
+    body: JSON.stringify({ message }),
+  });
+}
+
 export async function sendMessage(
   token: string,
   message: string,

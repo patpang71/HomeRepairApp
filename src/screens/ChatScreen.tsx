@@ -1,4 +1,4 @@
-import React, { useCallback, useRef, useState } from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import {
   Alert,
   FlatList,
@@ -25,11 +25,16 @@ const LOADING_LABELS: Record<NonNullable<LoadingStep>, string> = {
 };
 
 export default function ChatScreen() {
-  const { identityToken, signOut, refreshToken } = useAuth();
+  const { identityToken, sessionId: authSessionId, signOut, refreshToken } = useAuth();
   const [messages, setMessages] = useState<Message[]>([]);
   const [loadingStep, setLoadingStep] = useState<LoadingStep>(null);
   const [sessionId, setSessionId] = useState<string | undefined>();
   const flatListRef = useRef<FlatList<Message>>(null);
+
+  // Picks up the session the system message opened in AuthContext on connect.
+  useEffect(() => {
+    if (authSessionId) setSessionId(authSessionId);
+  }, [authSessionId]);
 
   const getToken = useCallback(async (): Promise<string> => {
     if (identityToken) return identityToken;
