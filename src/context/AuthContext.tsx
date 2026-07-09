@@ -18,6 +18,7 @@ interface AuthContextType {
   isLoading: boolean;
   isAuthenticated: boolean;
   sessionId: string | null;
+  greeting: string | null;
   signIn: () => Promise<void>;
   signOut: () => Promise<void>;
   refreshToken: () => Promise<string | null>;
@@ -29,15 +30,17 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [identityToken, setIdentityToken] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [sessionId, setSessionId] = useState<string | null>(null);
+  const [greeting, setGreeting] = useState<string | null>(null);
 
   // Tells the backend a client has connected so it can open a session before any user message arrives.
   const announceConnection = useCallback(async (token: string) => {
     try {
-      const { sessionId: newSessionId } = await sendSystemMessage(
+      const { sessionId: newSessionId, response } = await sendSystemMessage(
         token,
         `Client connected (${Platform.OS})`,
       );
       setSessionId(newSessionId);
+      setGreeting(response);
     } catch {
       // Non-fatal — the first user message will still establish a session.
     }
@@ -102,6 +105,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         isLoading,
         isAuthenticated: !!identityToken,
         sessionId,
+        greeting,
         signIn,
         signOut,
         refreshToken,

@@ -25,7 +25,7 @@ const LOADING_LABELS: Record<NonNullable<LoadingStep>, string> = {
 };
 
 export default function ChatScreen() {
-  const { identityToken, sessionId: authSessionId, signOut, refreshToken } = useAuth();
+  const { identityToken, sessionId: authSessionId, greeting, signOut, refreshToken } = useAuth();
   const [messages, setMessages] = useState<Message[]>([]);
   const [loadingStep, setLoadingStep] = useState<LoadingStep>(null);
   const [sessionId, setSessionId] = useState<string | undefined>();
@@ -35,6 +35,22 @@ export default function ChatScreen() {
   useEffect(() => {
     if (authSessionId) setSessionId(authSessionId);
   }, [authSessionId]);
+
+  // Surfaces the backend's connect-time greeting as the first assistant bubble.
+  useEffect(() => {
+    if (!greeting) return;
+    setMessages((prev) => {
+      if (prev.length > 0) return prev;
+      return [
+        {
+          id: `greeting-${Date.now()}`,
+          role: 'assistant',
+          content: greeting,
+          timestamp: new Date(),
+        },
+      ];
+    });
+  }, [greeting]);
 
   const getToken = useCallback(async (): Promise<string> => {
     if (identityToken) return identityToken;
