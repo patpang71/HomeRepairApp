@@ -11,6 +11,7 @@ import {
   Platform,
 } from 'react-native';
 import * as ImagePicker from 'expo-image-picker';
+import { ExpoSpeechRecognitionModule, useSpeechRecognitionEvent } from 'expo-speech-recognition';
 
 interface Props {
   onSend: (text: string, imageUri: string | null) => void;
@@ -21,6 +22,7 @@ interface Props {
 export default function ChatInput({ onSend, disabled, loadingLabel }: Props) {
   const [text, setText] = useState('');
   const [imageUri, setImageUri] = useState<string | null>(null);
+  const [isListening, setIsListening] = useState(false);
 
   const canSend = (text.trim().length > 0 || imageUri !== null) && !disabled;
 
@@ -67,6 +69,54 @@ export default function ChatInput({ onSend, disabled, loadingLabel }: Props) {
     setImageUri(null);
   };
 
+  const toggleListening = async () => {
+    if (disabled) return;
+    if (isListening) {
+      ExpoSpeechRecognitionModule.stop();
+      return;
+    }
+    const { granted } = await ExpoSpeechRecognitionModule.requestPermissionsAsync();
+    if (!granted) {
+      Alert.alert(
+        'Permission Required',
+        'Microphone and speech recognition access are needed for voice input.',
+      );
+      return;
+    }
+    setText('');
+    ExpoSpeechRecognitionModule.start({
+      lang: 'en-US',
+      interimResults: true,
+      continuous: false,
+      addsPunctuation: true,
+    });
+  };
+
+  useSpeechRecognitionEvent('start', () => setIsListening(true));
+
+  useSpeechRecognitionEvent('result', (event) => {
+    setText(event.results[0]?.transcript ?? '');
+  });
+
+  // Auto-sends the transcribed text once the user stops speaking.
+  useSpeechRecognitionEvent('end', () => {
+    setIsListening(false);
+    setText((current) => {
+      const trimmed = current.trim();
+      if (!trimmed || disabled) return current;
+      onSend(trimmed, imageUri);
+      setImageUri(null);
+      return '';
+    });
+  });
+
+  useSpeechRecognitionEvent('error', (event) => {
+    setIsListening(false);
+    if (event.error !== 'no-speech' && event.error !== 'aborted') {
+      Alert.alert('Speech Recognition Error', event.message || 'Please try again.');
+    }
+  });
+
   return (
     <View style={styles.container}>
       {imageUri && (
@@ -89,6 +139,13 @@ export default function ChatInput({ onSend, disabled, loadingLabel }: Props) {
         </View>
       )}
 
+      {isListening && (
+        <View style={styles.loadingRow}>
+          <ActivityIndicator size="small" color="#FF3B30" />
+          <Text style={styles.loadingLabel}>Listening…</Text>
+        </View>
+      )}
+
       <View style={styles.inputRow}>
         <TouchableOpacity
           style={styles.iconButton}
@@ -96,6 +153,16 @@ export default function ChatInput({ onSend, disabled, loadingLabel }: Props) {
           disabled={disabled}
         >
           <Text style={[styles.iconText, disabled && styles.iconDisabled]}>📷</Text>
+        </TouchableOpacity>
+
+        <TouchableOpacity
+          style={[styles.iconButton, isListening && styles.iconButtonListening]}
+          onPress={toggleListening}
+          disabled={disabled}
+        >
+          <Text style={[styles.iconText, disabled && styles.iconDisabled]}>
+            {isListening ? '⏹️' : '🎤'}
+          </Text>
         </TouchableOpacity>
 
         <TextInput
@@ -184,6 +251,10 @@ const styles = StyleSheet.create({
   },
   iconDisabled: {
     opacity: 0.4,
+  },
+  iconButtonListening: {
+    backgroundColor: '#FFE5E5',
+    borderRadius: 18,
   },
   input: {
     flex: 1,

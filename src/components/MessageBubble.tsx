@@ -1,11 +1,13 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   View,
   Text,
   Image,
   StyleSheet,
   Dimensions,
+  TouchableOpacity,
 } from 'react-native';
+import * as Speech from 'expo-speech';
 import { Message } from '../types';
 
 const MAX_IMAGE_WIDTH = Dimensions.get('window').width * 0.65;
@@ -16,6 +18,27 @@ interface Props {
 
 export default function MessageBubble({ message }: Props) {
   const isUser = message.role === 'user';
+  const [isSpeaking, setIsSpeaking] = useState(false);
+
+  useEffect(() => {
+    return () => {
+      if (isSpeaking) Speech.stop();
+    };
+  }, [isSpeaking]);
+
+  const toggleSpeak = () => {
+    if (isSpeaking) {
+      Speech.stop();
+      setIsSpeaking(false);
+      return;
+    }
+    Speech.speak(message.content, {
+      onDone: () => setIsSpeaking(false),
+      onStopped: () => setIsSpeaking(false),
+      onError: () => setIsSpeaking(false),
+    });
+    setIsSpeaking(true);
+  };
 
   return (
     <View style={[styles.row, isUser ? styles.rowUser : styles.rowAssistant]}>
@@ -36,6 +59,15 @@ export default function MessageBubble({ message }: Props) {
           <Text style={[styles.text, isUser ? styles.textUser : styles.textAssistant]}>
             {message.content}
           </Text>
+        )}
+        {!isUser && message.content !== '' && (
+          <TouchableOpacity
+            style={styles.speakButton}
+            onPress={toggleSpeak}
+            hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}
+          >
+            <Text style={styles.speakIcon}>{isSpeaking ? '⏹️' : '🔊'}</Text>
+          </TouchableOpacity>
         )}
       </View>
     </View>
@@ -100,5 +132,14 @@ const styles = StyleSheet.create({
   },
   textAssistant: {
     color: '#1C1C1E',
+  },
+  speakButton: {
+    alignSelf: 'flex-end',
+    paddingHorizontal: 14,
+    paddingBottom: 10,
+    marginTop: -4,
+  },
+  speakIcon: {
+    fontSize: 15,
   },
 });

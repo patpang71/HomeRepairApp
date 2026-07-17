@@ -45,6 +45,10 @@ PODS:
     - Yoga
   - ExpoSecureStore (14.0.1):
     - ExpoModulesCore
+  - ExpoSpeech (13.0.1):
+    - ExpoModulesCore
+  - ExpoSpeechRecognition (3.1.3):
+    - ExpoModulesCore
   - fast_float (6.1.4)
   - FBLazyVector (0.76.9)
   - fmt (11.0.2)
@@ -1643,6 +1647,8 @@ DEPENDENCIES:
   - ExpoKeepAwake (from `../node_modules/expo-keep-awake/ios`)
   - ExpoModulesCore (from `../node_modules/expo-modules-core`)
   - ExpoSecureStore (from `../node_modules/expo-secure-store/ios`)
+  - ExpoSpeech (from `../node_modules/expo-speech/ios`)
+  - ExpoSpeechRecognition (from `../node_modules/expo-speech-recognition/ios`)
   - fast_float (from `../node_modules/react-native/third-party-podspecs/fast_float.podspec`)
   - FBLazyVector (from `../node_modules/react-native/Libraries/FBLazyVector`)
   - fmt (from `../node_modules/react-native/third-party-podspecs/fmt.podspec`)
@@ -1741,6 +1747,10 @@ EXTERNAL SOURCES:
     :path: "../node_modules/expo-modules-core"
   ExpoSecureStore:
     :path: "../node_modules/expo-secure-store/ios"
+  ExpoSpeech:
+    :path: "../node_modules/expo-speech/ios"
+  ExpoSpeechRecognition:
+    :path: "../node_modules/expo-speech-recognition/ios"
   fast_float:
     :podspec: "../node_modules/react-native/third-party-podspecs/fast_float.podspec"
   FBLazyVector:
@@ -1885,6 +1895,8 @@ SPEC CHECKSUMS:
   ExpoKeepAwake: b0171a73665bfcefcfcc311742a72a956e6aa680
   ExpoModulesCore: 725faec070d590810d2ea5983d9f78f7cf6a38ec
   ExpoSecureStore: 9a3665d7161dd1031be386e278bffd623658f316
+  ExpoSpeech: 8f74347608243ee8fdc2faa14e7d2cd5503f33f8
+  ExpoSpeechRecognition: 95a6287f24fb8764ded6e9d0dd667a1e9e633dab
   fast_float: 06eeec4fe712a76acc9376682e4808b05ce978b6
   FBLazyVector: 7605ea4810e0e10ae4815292433c09bf4324ba45
   fmt: 01b82d4ca6470831d1cc0852a1af644be019e8f6
@@ -1951,6 +1963,6 @@ SPEC CHECKSUMS:
   SocketRocket: d4aabe649be1e368d1318fdf28a022d714d65748
   Yoga: feb4910aba9742cfedc059e2b2902e22ffe9954a
 
-PODFILE CHECKSUM: bb028bd914d6c9766d3686153de55953f0adb464
+PODFILE CHECKSUM: eccae17dd05c02e77f37e4c19ab93573b55545e6
 
 COCOAPODS: 1.16.2

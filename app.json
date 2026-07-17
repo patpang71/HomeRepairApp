@@ -12,7 +12,9 @@
       "infoPlist": {
         "NSCameraUsageDescription": "Used to take photos of your home repair issues.",
         "NSPhotoLibraryUsageDescription": "Used to select photos of your home repair issues.",
-        "NSPhotoLibraryAddUsageDescription": "Used to save photos of your home repair issues."
+        "NSPhotoLibraryAddUsageDescription": "Used to save photos of your home repair issues.",
+        "NSMicrophoneUsageDescription": "Used to record your voice so you can describe your home repair issue by speaking.",
+        "NSSpeechRecognitionUsageDescription": "Used to convert your spoken description of the repair issue into text."
       }
     },
     "plugins": [
@@ -22,6 +24,13 @@
         {
           "photosPermission": "The app needs access to your photos to share images of your home repair issues.",
           "cameraPermission": "The app needs access to your camera to take photos of your home repair issues."
+        }
+      ],
+      [
+        "expo-speech-recognition",
+        {
+          "microphonePermission": "Used to record your voice so you can describe your home repair issue by speaking.",
+          "speechRecognitionPermission": "Used to convert your spoken description of the repair issue into text."
         }
       ]
     ],
